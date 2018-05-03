@@ -1,3 +1,5 @@
+var hex = require('./util').hex;
+
 function GameBoyAdvanceSIO() {
 	this.SIO_NORMAL_8 = 0;
 	this.SIO_NORMAL_32 = 1;
@@ -127,3 +129,5 @@ GameBoyAdvanceSIO.prototype.read = function(slot) {
 	}
 	return 0;
 };
+
+module.exports = GameBoyAdvanceSIO;

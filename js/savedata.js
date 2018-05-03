@@ -1,3 +1,6 @@
+
+var MemoryView = require('./memory-view');
+
 function SRAMSavedata(size) {
 	MemoryView.call(this, new ArrayBuffer(size), 0);
 
@@ -35,10 +38,10 @@ function FlashSavedata(size) {
 	this.ID_PANASONIC = 0x1B32;
 	this.ID_SANYO = 0x1362;
 
-	this.bank0 = new DataView(this.buffer, 0, 0x00010000);
+	this.bank0 = MemoryView.DataView(this.buffer, 0, 0x00010000);
 	if (size > 0x00010000) {
 		this.id = this.ID_SANYO;
-		this.bank1 = new DataView(this.buffer, 0x00010000);
+		this.bank1 = MemoryView.DataView(this.buffer, 0x00010000);
 	} else {
 		this.id = this.ID_PANASONIC;
 		this.bank1 = null;
@@ -168,9 +171,9 @@ FlashSavedata.prototype.replaceData = function(memory) {
 	var bank = this.view === this.bank1;
 	MemoryView.prototype.replaceData.call(this, memory, 0);
 
-	this.bank0 = new DataView(this.buffer, 0, 0x00010000);
+	this.bank0 = MemoryView.DataView(this.buffer, 0, 0x00010000);
 	if (memory.byteLength > 0x00010000) {
-		this.bank1 = new DataView(this.buffer, 0x00010000);
+		this.bank1 = MemoryView.DataView(this.buffer, 0x00010000);
 	} else {
 		this.bank1 = null;
 	}
@@ -305,3 +308,7 @@ EEPROMSavedata.prototype.store32 = function(offset, value) {
 EEPROMSavedata.prototype.replaceData = function(memory) {
 	MemoryView.prototype.replaceData.call(this, memory, 0);
 };
+
+exports.SRAMSavedata = SRAMSavedata;
+exports.FlashSavedata = FlashSavedata;
+exports.EEPROMSavedata = EEPROMSavedata;

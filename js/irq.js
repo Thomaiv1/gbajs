@@ -1,3 +1,5 @@
+var MemoryBlock = require('./mmu').MemoryBlock;
+
 function GameBoyAdvanceInterruptHandler() {
 	this.inherit();
 	this.FREQUENCY = 0x1000000;
@@ -147,7 +149,7 @@ GameBoyAdvanceInterruptHandler.prototype.updateTimers = function() {
 					if (this.audio.enableChannelA && !this.audio.soundTimerA && this.audio.dmaA >= 0) {
 						this.audio.sampleFifoA();
 					}
-	
+
 					if (this.audio.enableChannelB && !this.audio.soundTimerB && this.audio.dmaB >= 0) {
 						this.audio.sampleFifoB();
 					}
@@ -184,7 +186,7 @@ GameBoyAdvanceInterruptHandler.prototype.updateTimers = function() {
 					if (this.audio.enableChannelA && this.audio.soundTimerA && this.audio.dmaA >= 0) {
 						this.audio.sampleFifoA();
 					}
-	
+
 					if (this.audio.enableChannelB && this.audio.soundTimerB && this.audio.dmaB >= 0) {
 						this.audio.sampleFifoB();
 					}
@@ -982,3 +984,5 @@ GameBoyAdvanceInterruptHandler.prototype.rl = function(source, dest, unitsize) {
 		this.cpu.mmu.store8(dPointer++, 0);
 	}
 };
+
+module.exports = GameBoyAdvanceInterruptHandler;

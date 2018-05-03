@@ -33,10 +33,39 @@ function GameBoyAdvanceKeypad() {
 	this.R = 8;
 	this.L = 9;
 
+	this.PRESS_TIME = 100;
+
 	this.currentDown = 0x03FF;
 	this.eatInput = false;
 
 	this.gamepads = [];
+};
+
+GameBoyAdvanceKeypad.prototype.press = function(key, time) {
+	time = time || this.PRESS_TIME;
+	var toggle = key;
+	var self = this;
+
+	toggle = 1 << toggle;
+	this.currentDown &= ~toggle;
+
+	setTimeout(function () {
+		self.currentDown |= toggle;
+	}, time);
+};
+
+GameBoyAdvanceKeypad.prototype.keydown = function(key) {
+	var toggle = key;
+
+	toggle = 1 << toggle;
+	this.currentDown &= ~toggle;
+};
+
+GameBoyAdvanceKeypad.prototype.keyup = function(key) {
+	var toggle = key;
+
+	toggle = 1 << toggle;
+	this.currentDown |= toggle;
 };
 
 GameBoyAdvanceKeypad.prototype.keyboardHandler = function(e) {
@@ -134,11 +163,11 @@ GameBoyAdvanceKeypad.prototype.gamepadDisconnectHandler = function(gamepad) {
 
 GameBoyAdvanceKeypad.prototype.pollGamepads = function() {
 	var navigatorList = [];
-	if (navigator.webkitGetGamepads) {
-		navigatorList = navigator.webkitGetGamepads();
-	} else if (navigator.getGamepads) {
-		navigatorList = navigator.getGamepads();
-	}
+	// if (navigator.webkitGetGamepads) {
+	// 	navigatorList = navigator.webkitGetGamepads();
+	// } else if (navigator.getGamepads) {
+	// 	navigatorList = navigator.getGamepads();
+	// }
 
 	// Let's all give a shout out to Chrome for making us get the gamepads EVERY FRAME
 	if (navigatorList.length) {
@@ -156,14 +185,16 @@ GameBoyAdvanceKeypad.prototype.pollGamepads = function() {
 };
 
 GameBoyAdvanceKeypad.prototype.registerHandlers = function() {
-	window.addEventListener("keydown", this.keyboardHandler.bind(this), true);
-	window.addEventListener("keyup", this.keyboardHandler.bind(this), true);
+	// window.addEventListener("keydown", this.keyboardHandler.bind(this), true);
+	// window.addEventListener("keyup", this.keyboardHandler.bind(this), true);
 
-	window.addEventListener("gamepadconnected", this.gamepadConnectHandler.bind(this), true);
-	window.addEventListener("mozgamepadconnected", this.gamepadConnectHandler.bind(this), true);
-	window.addEventListener("webkitgamepadconnected", this.gamepadConnectHandler.bind(this), true);
+	// window.addEventListener("gamepadconnected", this.gamepadConnectHandler.bind(this), true);
+	// window.addEventListener("mozgamepadconnected", this.gamepadConnectHandler.bind(this), true);
+	// window.addEventListener("webkitgamepadconnected", this.gamepadConnectHandler.bind(this), true);
 
-	window.addEventListener("gamepaddisconnected", this.gamepadDisconnectHandler.bind(this), true);
-	window.addEventListener("mozgamepaddisconnected", this.gamepadDisconnectHandler.bind(this), true);
-	window.addEventListener("webkitgamepaddisconnected", this.gamepadDisconnectHandler.bind(this), true);
+	// window.addEventListener("gamepaddisconnected", this.gamepadDisconnectHandler.bind(this), true);
+	// window.addEventListener("mozgamepaddisconnected", this.gamepadDisconnectHandler.bind(this), true);
+	// window.addEventListener("webkitgamepaddisconnected", this.gamepadDisconnectHandler.bind(this), true);
 };
+
+module.exports = GameBoyAdvanceKeypad;

@@ -1,3 +1,5 @@
+var GameBoyAdvanceSoftwareRenderer = require('./video/software').GameBoyAdvanceSoftwareRenderer;
+
 function GameBoyAdvanceVideo() {
 	this.renderPath = new GameBoyAdvanceSoftwareRenderer();
 
@@ -175,6 +177,8 @@ GameBoyAdvanceVideo.prototype.readDisplayStat = function() {
 };
 
 GameBoyAdvanceVideo.prototype.finishDraw = function(pixelData) {
-	this.context.putImageData(pixelData, 0, 0);
+	// this.context.putImageData(pixelData, 0, 0);
 	this.drawCallback();
 };
+
+module.exports = GameBoyAdvanceVideo;

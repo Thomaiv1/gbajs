@@ -1,3 +1,20 @@
+
+var fs = require('fs');
+var PNG = require('pngjs').PNG;
+
+require('./util');
+var ARMCore = require('./core');
+var GameBoyAdvanceMMU = require('./mmu').GameBoyAdvanceMMU;
+var GameBoyAdvanceInterruptHandler = require('./irq');
+var GameBoyAdvanceIO = require('./io');
+var GameBoyAdvanceAudio = require('./audio');
+var GameBoyAdvanceVideo = require('./video');
+var GameBoyAdvanceKeypad = require('./keypad');
+var GameBoyAdvanceSIO = require('./sio');
+var MemoryCanvas = require('./memory-canvas');
+
+var queueFrame
+
 function GameBoyAdvance() {
 	this.LOG_ERROR = 1;
 	this.LOG_WARN = 2;
@@ -63,16 +80,18 @@ function GameBoyAdvance() {
 	this.throttle = 16; // This is rough, but the 2/3ms difference gives us a good overhead
 
 	var self = this;
-	window.queueFrame = function (f) {
-		self.queue = window.setTimeout(f, self.throttle);
+	queueFrame = function (f) {
+		self.queue = setTimeout(f, self.throttle);
 	};
 
-	window.URL = window.URL || window.webkitURL;
+	// window.URL = window.URL || window.webkitURL;
 
 	this.video.vblankCallback = function() {
 		self.seenFrame = true;
 	};
 };
+
+GameBoyAdvance.MemoryCanvas = MemoryCanvas;
 
 GameBoyAdvance.prototype.setCanvas = function(canvas) {
 	var self = this;
@@ -97,6 +116,11 @@ GameBoyAdvance.prototype.setCanvasDirect = function(canvas) {
 	this.video.setBacking(this.context);
 };
 
+GameBoyAdvance.prototype.setCanvasMemory = function() {
+	var canvas = new MemoryCanvas();
+	this.setCanvasDirect(canvas);
+};
+
 GameBoyAdvance.prototype.setBios = function(bios, real) {
 	this.mmu.loadBios(bios, real);
 };
@@ -117,15 +141,20 @@ GameBoyAdvance.prototype.hasRom = function() {
 };
 
 GameBoyAdvance.prototype.loadRomFromFile = function(romFile, callback) {
-	var reader = new FileReader();
 	var self = this;
-	reader.onload = function(e) {
-		var result = self.setRom(e.target.result);
-		if (callback) {
-			callback(result);
+	fs.readFile(romFile, function (err, data) {
+		if (err) {
+			this.ERROR(err);
+			if (callback) {
+				callback(err, false);
+			}
+			return;
 		}
-	}
-	reader.readAsArrayBuffer(romFile);
+		var result = self.setRom(data);
+		if (callback) {
+			callback(result ? null : new Error('Invalid ROM'), result);
+		}
+	});
 };
 
 GameBoyAdvance.prototype.reset = function() {
@@ -243,11 +272,12 @@ GameBoyAdvance.prototype.setSavedata = function(data) {
 	this.mmu.loadSavedata(data);
 };
 
-GameBoyAdvance.prototype.loadSavedataFromFile = function(saveFile) {
-	var reader = new FileReader();
+GameBoyAdvance.prototype.loadSavedataFromFile = function(saveFile, callback) {
 	var self = this;
-	reader.onload = function(e) { self.setSavedata(e.target.result); }
-	reader.readAsArrayBuffer(saveFile);
+	fs.readFile(saveFile, function (err, data) {
+		self.setSavedata(data);
+		if (callback) callback(err);
+	});
 };
 
 GameBoyAdvance.prototype.decodeSavedata = function(string) {
@@ -300,6 +330,23 @@ GameBoyAdvance.prototype.encodeBase64 = function(view) {
 	return data.join('');
 };
 
+GameBoyAdvance.prototype.downloadSavedataToFile = function(saveFile, callback) {
+	var sram = this.mmu.save;
+	if (!sram) {
+		this.WARN("No save data available");
+		return null;
+	}
+	var buf = Buffer.from(sram.buffer);
+	fs.wirteFile(saveFile, function (err) {
+		if (err) {
+			this.ERROR(err);
+		}
+		if (callback) {
+			callback(err)
+		}
+	});
+};
+
 GameBoyAdvance.prototype.downloadSavedata = function() {
 	var sram = this.mmu.save;
 	if (!sram) {
@@ -338,6 +385,22 @@ GameBoyAdvance.prototype.retrieveSavedata = function() {
 		this.WARN('Could not retrieve savedata! ' + e);
 	}
 	return false;
+};
+
+GameBoyAdvance.prototype.screenshot = function() {
+	var pd = this.context.pixelData;
+	var png = new PNG({
+		width: pd.width,
+		height: pd.height,
+		bitDepth: 8,
+		// 6: RGBA
+		colorType: 6,
+		inputColorType: 6,
+		inputHasAlpha: true,
+	});
+
+	png.data = pd.data;
+	return png;
 };
 
 GameBoyAdvance.prototype.freeze = function() {
@@ -416,3 +479,5 @@ GameBoyAdvance.prototype.ASSERT = function(test, err) {
 		throw new Error("Assertion failed: " + err);
 	}
 };
+
+module.exports = GameBoyAdvance;

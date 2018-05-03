@@ -1,6 +1,6 @@
 function GameBoyAdvanceAudio() {
-	window.AudioContext = window.AudioContext || window.webkitAudioContext;
-	if (window.AudioContext) {
+	var AudioContext = null; /* window.AudioContext || window.webkitAudioContext; */
+	if (AudioContext) {
 		var self = this;
 		this.context = new AudioContext();
 		this.bufferSize = 0;
@@ -746,3 +746,5 @@ GameBoyAdvanceAudio.prototype.audioProcess = function(audioProcessingEvent) {
 		}
 	}
 };
+
+module.exports = GameBoyAdvanceAudio;

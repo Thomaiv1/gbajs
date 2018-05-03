@@ -1,0 +1,29 @@
+{
+  "name": "gbajs",
+  "version": "1.1.0",
+  "description": "Game Boy Advance in the node",
+  "main": "js/gba.js",
+  "dependencies": {
+    "buffer-dataview": "^0.0.2",
+    "pngjs": "^3.3.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tengattack/gbajs.git"
+  },
+  "keywords": [
+    "gba",
+    "gbajs",
+    "emulator"
+  ],
+  "author": "Jeffrey Pfau",
+  "license": "BSD-2-Clause",
+  "bugs": {
+    "url": "https://github.com/tengattack/gbajs/issues"
+  },
+  "homepage": "https://github.com/tengattack/gbajs#readme"
+}

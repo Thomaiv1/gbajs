@@ -1,4 +1,4 @@
-ARMCoreArm = function (cpu) {
+var ARMCoreArm = function (cpu) {
 	this.cpu = cpu;
 
 	this.addressingMode23Immediate = [
@@ -294,7 +294,7 @@ ARMCoreArm = function (cpu) {
 		null,
 		null,
 	];
-}
+};
 
 ARMCoreArm.prototype.constructAddressingMode1ASR = function(rs, rm) {
 	var cpu = this.cpu;
@@ -1567,3 +1567,5 @@ ARMCoreArm.prototype.constructUMULLS = function(rd, rn, rs, rm, condOp) {
 		cpu.cpsrZ = !((gprs[rd] & 0xFFFFFFFF) || (gprs[rn] & 0xFFFFFFFF));
 	};
 };
+
+module.exports = ARMCoreArm;

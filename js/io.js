@@ -1,3 +1,5 @@
+var Serializer = require('./util').Serializer;
+
 function GameBoyAdvanceIO() {
 	// Video
 	this.DISPCNT = 0x000;
@@ -824,3 +826,5 @@ GameBoyAdvanceIO.prototype.invalidatePage = function(address) {};
 GameBoyAdvanceIO.prototype.STUB_REG = function(type, offset) {
 	this.core.STUB('Unimplemented ' + type + ' register write: ' + offset.toString(16));
 };
+
+module.exports = GameBoyAdvanceIO;

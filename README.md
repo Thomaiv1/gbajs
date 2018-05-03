@@ -1,6 +1,9 @@
-GBA.js
+GBA.js for Node.js
 ======
-**Version 1.1-git — Copyright © 2012 – 2013 Jeffrey Pfau**
+
+**This is the node version of GBA.js**
+
+**Version 1.1-git — Copyright © 2012 – 2013 effrey Pfau**
 
 GBA.js is a Game Boy Advance emulator written from scratch to employ HTML5 technologies like Canvas and Web Audio. It uses no plugins, and is designed to run on cutting edge web browsers. It is hosted [on GitHub](https://github.com/endrift/gbajs) and is made available under the 2-clause BSD license. The most recent version can be found at [http://endrift.github.io/gbajs/](http://endrift.github.io/gbajs/).
 
@@ -28,6 +31,42 @@ All other browsers are untested.
 
 ## Game Compatibility
 Please see the [compatibility list on the GitHub wiki](https://github.com/endrift/gbajs/wiki/Compatibility-List) for a list of tested games. Note that GBA.js is tuned for commercial games, and is currently lacking good support for homebrew games.
+
+## Usage
+
+```js
+var fs = require('fs');
+var GameBoyAdvance = require('gbajs');
+
+var gba = new GameBoyAdvance();
+
+gba.logLevel = gba.LOG_ERROR;
+
+var biosBuf = fs.readFileSync('./node_modules/gbajs/resources/bios.bin');
+gba.setBios(biosBuf);
+gba.setCanvasMemory();
+
+gba.loadRomFromFile('/path/to/game.gba', function (err, result) {
+  if (err) {
+    console.error('loadRom failed:', err);
+    process.exit(1);
+  }
+  gba.loadSavedataFromFile('/path/to/game.sav');
+  gba.runStable();
+});
+
+var idx = 0;
+setInterval(function () {
+  var keypad = gba.keypad;
+  keypad.press(keypad.A);
+
+  setTimeout(function () {
+    /* pngjs: https://github.com/lukeapage/pngjs */
+    var png = gba.screenshot();
+    png.pack().pipe(fs.createWriteStream('gba' + idx + '.png'));
+  }, 200);
+}, 2000);
+```
 
 ## Feature List
 Currently, every part of the Game Boy Advance hardware, save for some lesser used features and the link cable are implemented.

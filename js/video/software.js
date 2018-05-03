@@ -413,7 +413,7 @@ GameBoyAdvanceOBJ.prototype.drawScanlineNormal = function(backing, y, yOff, star
 			totalWidth = end;
 		}
 	}
-	
+
 	var localX;
 	var localY;
 	if (!this.vflip) {
@@ -899,7 +899,7 @@ GameBoyAdvanceSoftwareRenderer.prototype.writeDisplayControl = function(value) {
 	if (this.backgroundMode == 2) {
 		this.bg[3].multipalette |= 0x0001;
 	}
-	
+
 	this.resetLayers();
 };
 
@@ -1604,3 +1604,5 @@ GameBoyAdvanceSoftwareRenderer.prototype.finishDraw = function(caller) {
 	this.bg[3].sy = this.bg[3].refy;
 	caller.finishDraw(this.pixelData);
 };
+
+exports.GameBoyAdvanceSoftwareRenderer = GameBoyAdvanceSoftwareRenderer;

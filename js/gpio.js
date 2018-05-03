@@ -164,7 +164,7 @@ GameBoyAdvanceRTC.prototype.processByte = function() {
 		// Control
 		this.control = this.bits & 0x40;
 		break;
-	}	
+	}
 	this.bits = 0;
 	this.bitsRead = 0;
 	if (!this.bytesRemaining) {
@@ -215,3 +215,6 @@ GameBoyAdvanceRTC.prototype.bcd = function(binary) {
 	counter += (binary % 10) << 4;
 	return counter;
 };
+
+exports.GameBoyAdvanceGPIO = GameBoyAdvanceGPIO;
+exports.GameBoyAdvanceRTC = GameBoyAdvanceRTC;
