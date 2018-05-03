@@ -1,8 +1,9 @@
+var inherit = require('./util').inherit;
 var ARMCoreArm = require('./arm');
 var ARMCoreThumb = require('./thumb');
 
 function ARMCore() {
-	this.inherit();
+	inherit.call(this);
 	this.SP = 13;
 	this.LR = 14;
 	this.PC = 15;

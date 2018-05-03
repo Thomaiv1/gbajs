@@ -1,8 +1,9 @@
 
 var BufferDataView = require('buffer-dataview');
+var inherit = require('./util').inherit;
 
 function MemoryView(memory, offset) {
-	this.inherit();
+	inherit.call(this);
 	this.buffer = memory;
 	this.view = MemoryView.DataView(this.buffer, typeof(offset) === "number" ? offset : 0);
 	this.mask = memory.byteLength - 1;

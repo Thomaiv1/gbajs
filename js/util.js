@@ -1,8 +1,8 @@
-Object.prototype.inherit = function() {
+function inherit() {
 	for (var v in this) {
 		this[v] = this[v];
 	}
-};
+}
 
 function hex(number, leading, usePrefix) {
 	if (typeof(usePrefix) === 'undefined') {
@@ -251,5 +251,6 @@ Serializer.pointer.prototype.readString = function(view) {
 	return bytes.join('');
 };
 
+exports.inherit = inherit;
 exports.hex = hex;
 exports.Serializer = Serializer;

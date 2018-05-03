@@ -2,7 +2,6 @@
 var fs = require('fs');
 var PNG = require('pngjs').PNG;
 
-require('./util');
 var ARMCore = require('./core');
 var GameBoyAdvanceMMU = require('./mmu').GameBoyAdvanceMMU;
 var GameBoyAdvanceInterruptHandler = require('./irq');
@@ -337,7 +336,7 @@ GameBoyAdvance.prototype.downloadSavedataToFile = function(saveFile, callback) {
 		return null;
 	}
 	var buf = Buffer.from(sram.buffer);
-	fs.wirteFile(saveFile, function (err) {
+	fs.writeFile(saveFile, buf, function (err) {
 		if (err) {
 			this.ERROR(err);
 		}

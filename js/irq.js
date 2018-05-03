@@ -1,7 +1,8 @@
+var inherit = require('./util').inherit;
 var MemoryBlock = require('./mmu').MemoryBlock;
 
 function GameBoyAdvanceInterruptHandler() {
-	this.inherit();
+	inherit.call(this);
 	this.FREQUENCY = 0x1000000;
 
 	this.cpu = null;

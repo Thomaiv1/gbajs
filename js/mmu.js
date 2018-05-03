@@ -1,6 +1,8 @@
 
 var MemoryView = require('./memory-view');
-var Serializer = require('./util').Serializer;
+var util = require('./util');
+var inherit = util.inherit;
+var Serializer = util.Serializer;
 var GameBoyAdvanceGPIO = require('./gpio').GameBoyAdvanceGPIO;
 var Savedata = require('./savedata');
 var EEPROMSavedata = Savedata.EEPROMSavedata;
@@ -105,7 +107,7 @@ BIOSView.prototype.store16 = function(offset, value) {};
 BIOSView.prototype.store32 = function(offset, value) {};
 
 function BadMemory(mmu, cpu) {
-	this.inherit();
+	inherit.call(this);
 	this.cpu = cpu;
 	this.mmu = mmu
 };
@@ -144,7 +146,7 @@ BadMemory.prototype.store32 = function(offset, value) {};
 BadMemory.prototype.invalidatePage = function(address) {};
 
 function GameBoyAdvanceMMU() {
-	this.inherit();
+	inherit.call(this);
 	this.REGION_BIOS = 0x0;
 	this.REGION_WORKING_RAM = 0x2;
 	this.REGION_WORKING_IRAM = 0x3;
