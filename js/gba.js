@@ -274,7 +274,11 @@ GameBoyAdvance.prototype.setSavedata = function(data) {
 GameBoyAdvance.prototype.loadSavedataFromFile = function(saveFile, callback) {
 	var self = this;
 	fs.readFile(saveFile, function (err, data) {
-		self.setSavedata(data);
+		if (err) {
+			self.ERROR(err);
+		} else {
+			self.setSavedata(data);
+		}
 		if (callback) callback(err);
 	});
 };
@@ -336,9 +340,10 @@ GameBoyAdvance.prototype.downloadSavedataToFile = function(saveFile, callback) {
 		return null;
 	}
 	var buf = Buffer.from(sram.buffer);
+	var self = this;
 	fs.writeFile(saveFile, buf, function (err) {
 		if (err) {
-			this.ERROR(err);
+			self.ERROR(err);
 		}
 		if (callback) {
 			callback(err)
