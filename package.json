@@ -1,15 +1,29 @@
 {
-  "name": "gbajs",
+  "name": "node-gbajs",
+  "files": [
+    "./dist/**/*",
+    "./resources/**/*"
+  ],
+  "type": "module",
   "version": "1.1.2",
   "description": "Game Boy Advance in the node",
-  "main": "js/gba.js",
   "dependencies": {
     "buffer-dataview": "^0.0.2",
     "pngjs": "^3.3.3"
   },
-  "devDependencies": {},
+  "module": "./dist/gba.js",
+  "exports": {
+    "import": "./dist/gba.js"
+  },
+  "devDependencies": {
+    "pkgroll": "^2.0.2",
+    "rimraf": "^5.0.5"
+  },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "bun run ./build.js",
+    "prepublishOnly": "git push && npm run build",
+    "purge": "npx rimraf ./dist"
   },
   "repository": {
     "type": "git",
